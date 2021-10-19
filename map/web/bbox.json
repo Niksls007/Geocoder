@@ -1,0 +1,1 @@
+﻿var bbox_map ={"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[[37.12, 55.92], [37.28, 55.92], [37.28, 56.05], [37.12, 56.05]]]}, "properties": {"name": "Охват"}}]}

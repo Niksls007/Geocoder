@@ -1,0 +1,107 @@
+<html>
+  <head>
+    <title>Geocoder</title>
+        
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+  crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""></script>
+ 
+    <style>
+         html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+        
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        
+    </style>
+</head>
+
+<body>
+
+    <div id='map'></div>
+
+
+    <!-- Скрипт Leaflet -->
+    
+    <script src="bbox.json"></script>
+
+
+    <script>
+        // Инициализация карты
+
+        
+
+         
+         var map = new L.map('map', {
+           
+            zoom: 10,
+            minZoom: 2, 
+            maxZoom: 23 
+        });
+        var datalayer = L.geoJSON(bbox_map).addTo(map);
+
+        var bounds = datalayer.getBounds()
+
+        map.fitBounds(bounds)
+        var center = bounds.getCenter()
+        map.panTo(center)                       // центрировать на полигоне
+
+
+         var two_gis = L.tileLayer('http://tile1.maps.2gis.com/tiles?x={x}&y={y}&z={z}',{attribution: '', maxZoom: 30}).addTo(map);
+
+         var GG = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {subdomains:['mt0','mt1','mt2','mt3']}).addTo(map);
+         var MB = L.tileLayer('https://api.mapbox.com/styles/v1/nikitasls007/ckoa9y6zb3sbj17qu8qsyv8w5/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibmlraXRhc2xzMDA3IiwiYSI6ImNqcGl1cGwwYjAwMXUza29tNWQ0Y3l5bngifQ._JmD8W2okst00WVJKeGscw', {
+            attribution: '',
+            maxZoom: 30
+         }).addTo(map);
+          
+         
+                                      
+         var baseMaps = {
+            "2GIS": two_gis,
+            "Google": GG,
+            "Mapbox": MB,
+            
+         };
+ 
+       
+
+                                     
+       
+
+        var overlayMaps = {
+            "Охват": datalayer
+        };
+
+       L.control.layers(baseMaps, overlayMaps).addTo(map);
+            
+   
+
+       
+        var geojsonMarkerOptions = {
+            radius: 10,
+            fillColor: "#FFB6C1",
+            color: "#000080",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+        };
+       
+        
+
+
+        </script>
+    
+</body>
+
+</html>

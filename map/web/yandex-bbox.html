@@ -1,0 +1,108 @@
+<html>
+  <head>
+    <title>Geocoder</title>
+        
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+  crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""></script>
+ 
+    <style>
+         html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+        
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        
+    </style>
+</head>
+
+<body>
+
+    <div id='map'></div>
+
+
+    <!-- Скрипт Leaflet -->
+    
+    <script src="bbox.json"></script>
+
+
+    <script>
+        // Инициализация карты
+
+        
+
+         
+         var map = new L.map('map', {
+           
+            zoom: 10,
+            minZoom: 2, 
+            maxZoom: 23,
+            crs: L.CRS.EPSG3395 
+        });
+        var datalayer = L.geoJSON(bbox_map).addTo(map);
+
+        var bounds = datalayer.getBounds()
+
+        map.fitBounds(bounds)
+        var center = bounds.getCenter()
+        map.panTo(center)                       // центрировать на полигоне
+
+
+         var yandex = L.tileLayer(
+        'http://vec{s}.maps.yandex.net/tiles?l=map&v=4.55.2&z={z}&x={x}&y={y}&scale=2&lang=ru_RU', {
+       subdomains: ['01', '02', '03', '04'],
+       attribution: '<a http="yandex.ru" target="_blank">Яндекс</a>',
+       reuseTiles: true,
+       updateWhenIdle: false
+    
+           }
+           ).addTo(map);
+          
+         
+                                      
+         var baseMaps = {
+            "Yandex": yandex,
+            
+         };
+ 
+       
+
+                                     
+       
+
+        var overlayMaps = {
+            "Охват": datalayer
+        };
+
+       L.control.layers(baseMaps, overlayMaps).addTo(map);
+            
+   
+
+       
+        var geojsonMarkerOptions = {
+            radius: 10,
+            fillColor: "#FFB6C1",
+            color: "#000080",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+        };
+       
+        
+
+
+        </script>
+    
+</body>
+
+</html>

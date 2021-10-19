@@ -1,0 +1,128 @@
+<html>
+  <head>
+    <title>Geocoder</title>
+		
+		   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
+
+  <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js" integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
+ 
+    <style>
+    	 html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+        
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        
+    </style>
+</head>
+
+<body>
+
+    <div id='map'></div>
+
+
+    <!-- Скрипт Leaflet -->
+    <script src="GeoObs.json"></script>
+
+
+    <script>
+        // Инициализация карты
+
+        var map = new L.map('map', {
+            zoom: 10,
+            minZoom: 2, //14,
+            maxZoom:23 
+        });
+        var markers = L.markerClusterGroup();
+        
+        var address= L.geoJSON(adm, {
+            pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, geojsonMarkerOptions).bindTooltip(feature.properties.name, {permanent: true, opacity: 0.7}).openTooltip();
+                },
+                onEachFeature: null
+                });
+
+        markers.addLayer(address);
+        map.addLayer(markers);
+
+        // Создание тайлового слоя OSM CartoDB (карта)
+
+
+        var two_gis = L.tileLayer('http://tile1.maps.2gis.com/tiles?x={x}&y={y}&z={z}',{attribution: '', maxZoom: 30}).addTo(map);
+
+         var GG = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {subdomains:['mt0','mt1','mt2','mt3']}).addTo(map);
+         var MB = L.tileLayer('https://api.mapbox.com/styles/v1/nikitasls007/ckoa9y6zb3sbj17qu8qsyv8w5/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibmlraXRhc2xzMDA3IiwiYSI6ImNqcGl1cGwwYjAwMXUza29tNWQ0Y3l5bngifQ._JmD8W2okst00WVJKeGscw', {
+            attribution: '',
+            maxZoom: 30
+         }).addTo(map);
+                                     
+        var baseMaps = {
+            "2GIS": two_gis,
+            "Google": GG,
+            "Mapbox": MB
+            
+         };
+
+		var overlayMaps = {
+        "Адреса":markers
+		};
+		 L.control.layers(baseMaps, overlayMaps).addTo(map);
+			
+   
+
+       
+        var geojsonMarkerOptions = {
+            radius: 10,
+            fillColor: "#FFB6C1",
+            color: "#000080",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+        };
+       // скрыть имена после определенного zoom
+            var lastZoom;
+            map.on('zoomend', function() {
+              var zoom = map.getZoom();
+              if (zoom < 17 && (!lastZoom || lastZoom >= 17)) {
+                map.eachLayer(function(l) {
+                  if (l.getTooltip) {
+                    var toolTip = l.getTooltip();
+                    if (toolTip) {
+                      this.map.closeTooltip(toolTip);
+                    }
+                  }
+                });
+              } else if (zoom >= 17 && (!lastZoom || lastZoom < 17)) {
+                map.eachLayer(function(l) {
+                  if (l.getTooltip) {
+                    var toolTip = l.getTooltip();
+                    if (toolTip) {
+                      this.map.addLayer(toolTip);
+                    }
+                  }
+                });
+              }
+              lastZoom = zoom;
+            })                         
+        map.fitBounds(address.getBounds());
+        var center = address.getCenter();
+        map.panTo(center)
+
+        
+
+
+
+        </script>
+	
+</body>
+
+</html>
